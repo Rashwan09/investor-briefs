@@ -774,12 +774,12 @@
                 <div class="calculator-grid" style="margin-top: 0;">
                     <div class="calc-input-group">
                         <label for="appreciation">Annual Appreciation (%)</label>
-                        <input type="range" id="appreciation" min="0" max="10" step="0.5" value="4" onchange="updateCalculation()">
+                        <input type="range" id="appreciation" min="0" max="20" step="0.5" value="4" onchange="updateCalculation()">
                         <div class="range-display"><span id="appreciation-display">4</span>% per year</div>
                     </div>
                     <div class="calc-input-group">
                         <label for="rental-yield">Annual Rental Yield (%)</label>
-                        <input type="range" id="rental-yield" min="0" max="10" step="0.5" value="5" onchange="updateCalculation()">
+                        <input type="range" id="rental-yield" min="0" max="20" step="0.5" value="5" onchange="updateCalculation()">
                         <div class="range-display"><span id="rental-display">5</span>% per year</div>
                     </div>
                 </div>
@@ -817,19 +817,34 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><strong>Booking Deposit</strong></td>
-                                <td><strong>40%</strong></td>
-                                <td id="booking-amount"><strong>AED 1,576,000</strong></td>
+                                <td><strong>Down Payment (Immediate)</strong></td>
+                                <td><strong>20%</strong></td>
+                                <td id="down-payment-amount"><strong>AED 788,000</strong></td>
                             </tr>
                             <tr>
-                                <td><strong>During Construction</strong></td>
-                                <td><strong>35%</strong></td>
-                                <td id="construction-amount"><strong>AED 1,379,000</strong></td>
+                                <td><strong>Installment 1 (Month 6)</strong></td>
+                                <td><strong>5%</strong></td>
+                                <td id="month6-amount"><strong>AED 197,000</strong></td>
                             </tr>
                             <tr>
-                                <td><strong>On Handover</strong></td>
-                                <td><strong>25%</strong></td>
-                                <td id="handover-amount"><strong>AED 985,000</strong></td>
+                                <td><strong>Installment 2 (Month 12)</strong></td>
+                                <td><strong>5%</strong></td>
+                                <td id="month12-amount"><strong>AED 197,000</strong></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Installment 3 (Month 18)</strong></td>
+                                <td><strong>5%</strong></td>
+                                <td id="month18-amount"><strong>AED 197,000</strong></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Installment 4 (Month 24)</strong></td>
+                                <td><strong>5%</strong></td>
+                                <td id="month24-amount"><strong>AED 197,000</strong></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Final Payment (Q4 2029)</strong></td>
+                                <td><strong>60%</strong></td>
+                                <td id="handover-amount"><strong>AED 2,364,000</strong></td>
                             </tr>
                             <tr>
                                 <td><strong>Total Investment</strong></td>
@@ -925,10 +940,16 @@
             const rentalYield = parseFloat(document.getElementById('rental-yield').value) / 100;
 
             const initialPrice = units[unitIndex].price;
+            const constructionPeriod = 2; // 2-year construction period (handover Q2 2028)
 
+            // Capital appreciation applies across entire hold period
             const futureValue = initialPrice * Math.pow(1 + appreciation, holdYears);
             const capitalGain = futureValue - initialPrice;
-            const rentalIncome = initialPrice * rentalYield * holdYears;
+
+            // Rental income ONLY applies AFTER handover (after construction period)
+            const yearsOfRental = Math.max(0, holdYears - constructionPeriod);
+            const rentalIncome = initialPrice * rentalYield * yearsOfRental;
+
             const totalReturn = capitalGain + rentalIncome;
             const returnPercentage = (totalReturn / initialPrice) * 100;
 
@@ -941,14 +962,21 @@
             document.getElementById('rental-income').textContent = formatCurrency(rentalIncome, currency);
             document.getElementById('total-return').textContent = returnPercentage.toFixed(1) + '%';
 
-            const booking = initialPrice * 0.40;
-            const construction = initialPrice * 0.35;
-            const handover = initialPrice * 0.25;
+            // New payment schedule: 20% down, 5% per installment (4x), 60% on handover
+            const downPayment = initialPrice * 0.20;
+            const installment1 = initialPrice * 0.05;
+            const installment2 = initialPrice * 0.05;
+            const installment3 = initialPrice * 0.05;
+            const installment4 = initialPrice * 0.05;
+            const finalPayment = initialPrice * 0.60;
 
-            document.getElementById('booking-amount').textContent = '<strong>' + formatCurrency(booking, currency) + '</strong>';
-            document.getElementById('construction-amount').textContent = '<strong>' + formatCurrency(construction, currency) + '</strong>';
-            document.getElementById('handover-amount').textContent = '<strong>' + formatCurrency(handover, currency) + '</strong>';
-            document.getElementById('total-amount').textContent = '<strong>' + formatCurrency(initialPrice, currency) + '</strong>';
+            document.getElementById('down-payment-amount').innerHTML = '<strong>' + formatCurrency(downPayment, currency) + '</strong>';
+            document.getElementById('month6-amount').innerHTML = '<strong>' + formatCurrency(installment1, currency) + '</strong>';
+            document.getElementById('month12-amount').innerHTML = '<strong>' + formatCurrency(installment2, currency) + '</strong>';
+            document.getElementById('month18-amount').innerHTML = '<strong>' + formatCurrency(installment3, currency) + '</strong>';
+            document.getElementById('month24-amount').innerHTML = '<strong>' + formatCurrency(installment4, currency) + '</strong>';
+            document.getElementById('handover-amount').innerHTML = '<strong>' + formatCurrency(finalPayment, currency) + '</strong>';
+            document.getElementById('total-amount').innerHTML = '<strong>' + formatCurrency(initialPrice, currency) + '</strong>';
             document.getElementById('header-amount').textContent = 'Amount (' + currency + ')';
         }
 
