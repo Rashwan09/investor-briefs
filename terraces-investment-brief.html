@@ -970,13 +970,13 @@
             const installment4 = initialPrice * 0.05;
             const finalPayment = initialPrice * 0.60;
 
-            document.getElementById('down-payment-amount').textContent = '<strong>' + formatCurrency(downPayment, currency) + '</strong>';
-            document.getElementById('month6-amount').textContent = '<strong>' + formatCurrency(installment1, currency) + '</strong>';
-            document.getElementById('month12-amount').textContent = '<strong>' + formatCurrency(installment2, currency) + '</strong>';
-            document.getElementById('month18-amount').textContent = '<strong>' + formatCurrency(installment3, currency) + '</strong>';
-            document.getElementById('month24-amount').textContent = '<strong>' + formatCurrency(installment4, currency) + '</strong>';
-            document.getElementById('handover-amount').textContent = '<strong>' + formatCurrency(finalPayment, currency) + '</strong>';
-            document.getElementById('total-amount').textContent = '<strong>' + formatCurrency(initialPrice, currency) + '</strong>';
+            document.getElementById('down-payment-amount').innerHTML = '<strong>' + formatCurrency(downPayment, currency) + '</strong>';
+            document.getElementById('month6-amount').innerHTML = '<strong>' + formatCurrency(installment1, currency) + '</strong>';
+            document.getElementById('month12-amount').innerHTML = '<strong>' + formatCurrency(installment2, currency) + '</strong>';
+            document.getElementById('month18-amount').innerHTML = '<strong>' + formatCurrency(installment3, currency) + '</strong>';
+            document.getElementById('month24-amount').innerHTML = '<strong>' + formatCurrency(installment4, currency) + '</strong>';
+            document.getElementById('handover-amount').innerHTML = '<strong>' + formatCurrency(finalPayment, currency) + '</strong>';
+            document.getElementById('total-amount').innerHTML = '<strong>' + formatCurrency(initialPrice, currency) + '</strong>';
             document.getElementById('header-amount').textContent = 'Amount (' + currency + ')';
         }
 
